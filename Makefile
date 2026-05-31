@@ -1,4 +1,11 @@
 PREFIX ?= /usr
+UNAME := $(shell uname -s)
+ifeq ($(UNAME),OpenBSD)
+INSTALL ?= ginstall
+else
+INSTALL ?= install
+endif
+
 DESTDIR ?=
 BINDIR ?= $(PREFIX)/bin
 export GO111MODULE := on
@@ -20,7 +27,7 @@ amneziawg-go: $(wildcard *.go) $(wildcard */*.go)
 	go build -v -o "$@"
 
 install: amneziawg-go
-	@install -v -d "$(DESTDIR)$(BINDIR)" && install -v -m 0755 "$<" "$(DESTDIR)$(BINDIR)/amneziawg-go"
+	@$(INSTALL) -v -d "$(DESTDIR)$(BINDIR)" && $(INSTALL) -v -m 0755 "$<" "$(DESTDIR)$(BINDIR)/amneziawg-go"
 
 test:
 	go test ./...
